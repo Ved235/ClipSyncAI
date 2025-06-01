@@ -1,5 +1,5 @@
 import os
-from moviepy import VideoFileClip, AudioFileClip, concatenate_videoclips
+from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
 
 def generate_final_montage(clips_folder: str, music_path: str, output_path: str):
     """
@@ -25,10 +25,10 @@ def generate_final_montage(clips_folder: str, music_path: str, output_path: str)
     final_video = concatenate_videoclips(video_clips, method="compose")
 
     # Step 6: Adjust the music to the length of the video montage
-    final_audio = audio_clip.subclipped(0, final_video.duration)  # Trim music to match the video length
+    final_audio = audio_clip.subclip(0, final_video.duration)  # Trim music to match the video length
 
     # Step 7: Set the audio for the final video
-    final_video = final_video.with_audio(final_audio)
+    final_video = final_video.set_audio(final_audio)
 
     # Step 8: Write the final video with synchronized audio and the same fps as the input
     final_video.write_videofile(output_path, codec="libx264", audio_codec="aac", fps=fps)
