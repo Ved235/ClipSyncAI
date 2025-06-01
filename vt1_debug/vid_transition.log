@@ -1,0 +1,92 @@
+[INFO] [02:16:01] - 
+    Yb    dP 88 8888b.      888888 88""Yb    db    88b 88 .dP"Y8 88 888888 
+     Yb  dP  88  8I  Yb       88   88__dP   dPYb   88Yb88 `Ybo." 88   88   
+      YbdP   88  8I  dY       88   88"Yb   dP__Yb  88 Y88 o.`Y8b 88   88   
+       YP    88 8888Y"        88   88  Yb dP""""Yb 88  Y8 8bodP' 88   88   
+    
+[DEBUG] [02:16:01] - ================================================================================
+[INFO] [02:16:01] - ====================== starting video transition creation ======================
+[DEBUG] [02:16:01] - ================================================================================
+[INFO] [02:16:01] - 
+[INFO] [02:16:01] - first input video: kill_clips\kill1.mp4
+[INFO] [02:16:01] - second input video: kill_clips\kill4.mp4
+[INFO] [02:16:01] - output transition phase1 video: C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_phase1.mp4
+[INFO] [02:16:01] - output transition phase2 video: C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_phase2.mp4
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - command used for extracting FPS
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - ffmpeg -hide_banner -i kill_clips\kill1.mp4
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - stdout:
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - stderr:
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'kill_clips\kill1.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2mp41
+    encoder         : Lavf58.76.100
+  Duration: 00:00:02.66, start: 0.000000, bitrate: 16904 kb/s
+  Stream #0:0[0x1](und): Video: mpeg4 (Simple Profile) (mp4v / 0x7634706D), yuv420p, 1920x1080 [SAR 1:1 DAR 16:9], 16901 kb/s, 24.45 fps, 24.45 tbr, 24448 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+At least one output file must be specified
+
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - searching for FPS value in ffmpeg video information
+[DEBUG] [02:16:01] - failed extract FPS, value [24.45], error :[<class 'ValueError'>]
+[INFO] [02:16:01] - WARNING: cloud not retrieve FPS value from video (using ffmpeg): kill_clips\kill1.mp4
+[INFO] [02:16:01] - WARNING: falling back to FPS value of [30]
+[INFO] [02:16:01] - frames per second (FPS): 30
+[DEBUG] [02:16:01] - created vid1_raw_images_folder: C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_debug\1_phase1_raw
+[DEBUG] [02:16:01] - created vid2_raw_images_folder: C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_debug\1_phase2_raw
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - command used for extracting images from video num 1:
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - ffmpeg -hide_banner -sseof -500ms -i kill_clips\kill1.mp4 C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_debug\1_phase1_raw\%04d.png
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - stdout:
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - stderr:
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'kill_clips\kill1.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2mp41
+    encoder         : Lavf58.76.100
+  Duration: 00:00:02.66, start: 0.000000, bitrate: 16904 kb/s
+  Stream #0:0[0x1](und): Video: mpeg4 (Simple Profile) (mp4v / 0x7634706D), yuv420p, 1920x1080 [SAR 1:1 DAR 16:9], 16901 kb/s, 24.45 fps, 24.45 tbr, 24448 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:0 -> #0:0 (mpeg4 (native) -> png (native))
+Press [q] to stop, [?] for help
+Output #0, image2, to 'C:\Users\vedan\Downloads\ClipSyncAI-master\ClipSyncAI-master\vt1_debug\1_phase1_raw\%04d.png':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2mp41
+    encoder         : Lavf60.15.100
+  Stream #0:0(und): Video: png, rgb24(pc, gbr/unknown/unknown, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 24.45 fps, 24.45 tbn (default)
+    Metadata:
+      handler_name    : VideoHandler
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc60.30.101 png
+frame=    0 fps=0.0 q=0.0 size=       0kB time=N/A bitrate=N/A speed=N/A    
+[out#0/image2 @ 000001648e492c00] video:22675kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+frame=   12 fps=0.0 q=-0.0 Lsize=N/A time=00:00:00.44 bitrate=N/A speed=2.13x    
+
+[DEBUG] [02:16:01] - 
+[DEBUG] [02:16:01] - 
+[ERROR] [02:16:01] - ERROR: could not extract [13] images from the first video (12 extracted) (use --debug from more info)

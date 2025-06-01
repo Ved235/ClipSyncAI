@@ -1,7 +1,7 @@
 import cv2
 import os
 
-def extract_kill_clips(video_path: str, timestamps_file: str, buffer_duration: float = 2.0, max_gap: float = 4.0):
+def extract_kill_clips(video_path: str, timestamps_file: str, buffer_duration: float = 0.5, max_gap: float = 0.5):
     """
     Extracts clips based on kill timestamps with a buffer before and after the kill event.
     """
@@ -42,7 +42,7 @@ def extract_kill_clips(video_path: str, timestamps_file: str, buffer_duration: f
     # Function to extract the kill clip with a buffer for a group of timestamps
     def extract_kill_clip(start_time, end_time, output_path):
         start_frame = max(int((start_time - buffer_duration) * fps), 0)
-        end_frame = int((end_time + buffer_duration) * fps)
+        end_frame = int((end_time) * fps)
 
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         
