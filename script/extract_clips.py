@@ -1,78 +1,82 @@
-import cv2
 import os
+from moviepy.editor import VideoFileClip
 
-def extract_kill_clips(video_path: str, timestamps_file: str, buffer_duration: float = 0.5, max_gap: float = 0.5):
+def extract_kill_clips(video_path: str,
+                                  timestamps_file: str,
+                                  buffer_duration: float = 0.5,
+                                  max_gap: float = 0.5):
     """
-    Extracts clips based on kill timestamps with a buffer before and after the kill event.
+    Extracts short clips (including audio) from `video_path` based on kill timestamps.
+    Each group of timestamps that are within `max_gap` seconds of each other becomes one clip,
+    with an extra `buffer_duration` added before the first timestamp and after the last timestamp.
     """
-    # Create the output directory for the clips
+    # 1. Prepare output folder
     output_dir = "kill_clips"
     os.makedirs(output_dir, exist_ok=True)
 
-    # Load the video
-    cap = cv2.VideoCapture(video_path)
-    fps = cap.get(cv2.CAP_PROP_FPS)
-
-    # Check if FPS is valid
-    if fps <= 0:
-        print("Error: Unable to retrieve FPS. Exiting.")
-        exit()
-
-    # Read timestamps from the file
+    # 2. Read all timestamps (in seconds) from the file
     with open(timestamps_file, "r") as f:
-        timestamps = [float(line.strip()) for line in f.readlines()]
+        # Each line should be a float, e.g. "12.34\n"
+        timestamps = [float(line.strip()) for line in f if line.strip()]
 
-    # Group the kills based on proximity (e.g., 4 seconds apart for the same kill sequence)
-    grouped_timestamps = []
-    current_group = []
+    if not timestamps:
+        print("No timestamps found, exiting.")
+        return []
 
-    for i in range(len(timestamps)):
-        if not current_group:
-            current_group.append(timestamps[i])
-        else:
-            if timestamps[i] - current_group[-1] <= max_gap:
-                current_group.append(timestamps[i])
-            else:
-                grouped_timestamps.append(current_group)
-                current_group = [timestamps[i]]
+    timestamps.sort()
     
-    if current_group:
-        grouped_timestamps.append(current_group)
+    # 3. Group timestamps that are within max_gap of each other
+    grouped_timestamps = []
+    current_group = [timestamps[0]]
 
-    # Function to extract the kill clip with a buffer for a group of timestamps
-    def extract_kill_clip(start_time, end_time, output_path):
-        start_frame = max(int((start_time - buffer_duration) * fps), 0)
-        end_frame = int((end_time) * fps)
+    for t in timestamps[1:]:
+        if t - current_group[-1] <= max_gap:
+            current_group.append(t)
+        else:
+            grouped_timestamps.append(current_group)
+            current_group = [t]
+    grouped_timestamps.append(current_group)
 
-        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        
-        start_frame = max(0, min(start_frame, total_frames - 1))
-        end_frame = max(0, min(end_frame, total_frames - 1))
+    # 4. Load the full video once
+    video = VideoFileClip(video_path)
+    video_duration = video.duration  # in seconds
 
-        cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
-
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        out = cv2.VideoWriter(output_path, fourcc, fps, (int(cap.get(3)), int(cap.get(4))))
-
-        for _ in range(start_frame, end_frame):
-            ret, frame = cap.read()
-            if not ret:
-                break
-            out.write(frame)
-
-        out.release()
-
-    # Create and save the clips
     clip_paths = []
     for idx, group in enumerate(grouped_timestamps):
-        start_time = min(group)
-        end_time = max(group)
+        start_time = max(min(group) - buffer_duration, 0)
+        end_time = min(max(group), video_duration)
 
-        output_clip_path = os.path.join(output_dir, f"kill{idx + 1}.mp4")
-        extract_kill_clip(start_time, end_time, output_clip_path)
+        # MoviePy’s subclip uses (t_start, t_end) in seconds
+        subclip = video.subclip(start_time, end_time)
 
-        print(f"Kill clip for group {idx + 1} saved: {output_clip_path}")
+        output_clip_path = os.path.join(output_dir, f"kill{idx+1}.mp4")
+        # Write out the clip with both video + audio
+        # You can tweak bitrate/fps/etc. if needed; this is a reasonable default
+        subclip.write_videofile(
+            output_clip_path,
+            codec="libx264",
+            audio_codec="aac",
+            temp_audiofile="temp-audio.m4a",
+            remove_temp=True,
+            fps=video.fps,
+            verbose=False,
+            logger=None
+        )
+        
+        print(f"Saved clip #{idx+1}: {output_clip_path}")
         clip_paths.append(output_clip_path)
 
-    cap.release()
+    video.reader.close()
+    video.audio.reader.close_proc()
     return clip_paths
+
+
+if __name__ == "__main__":
+    video_file = "valorant.mp4"       # replace with your actual video file path
+    timestamps_txt = "valorant_kill_timestamps.txt"    # replace with your timestamps file
+    extract_kill_clips(
+        video_file,
+        timestamps_txt,
+        buffer_duration=0.5,
+        max_gap=0.5
+    )

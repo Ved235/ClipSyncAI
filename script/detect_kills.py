@@ -21,7 +21,7 @@ def detect_kills(video_path: str, timestamps_file: str):
             break
         
         # Process only every 30th frame
-        if frame_count % 10 == 0:
+        if frame_count % 5 == 0:
             # Run inference on the current frame (detection only on every 30th frame)
             results = model(frame)  # Detection only on every 30th frame
 
